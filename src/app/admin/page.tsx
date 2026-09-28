@@ -1,2 +1,2 @@
-import { AuthForm } from "@/components/trinex/auth-form"
-export default function Page(){return <AuthForm admin/>}
+import { AdminPage } from "@/components/trinex/admin-page"
+export default function Page(){return <AdminPage area="Overview"/>}
