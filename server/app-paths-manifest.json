@@ -1,0 +1,22 @@
+{
+  "/(auth)/sign-in/page": "app/(auth)/sign-in/page.js",
+  "/(auth)/sign-up/page": "app/(auth)/sign-up/page.js",
+  "/(dashboard)/accounts/page": "app/(dashboard)/accounts/page.js",
+  "/(dashboard)/analytics/page": "app/(dashboard)/analytics/page.js",
+  "/(dashboard)/budgets/page": "app/(dashboard)/budgets/page.js",
+  "/(dashboard)/cards/page": "app/(dashboard)/cards/page.js",
+  "/(dashboard)/crypto/page": "app/(dashboard)/crypto/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(dashboard)/investments/page": "app/(dashboard)/investments/page.js",
+  "/(dashboard)/notifications/page": "app/(dashboard)/notifications/page.js",
+  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
+  "/(dashboard)/support/page": "app/(dashboard)/support/page.js",
+  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
+  "/(dashboard)/transfers/page": "app/(dashboard)/transfers/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/health/route": "app/api/health/route.js",
+  "/api/market/ticker/route": "app/api/market/ticker/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/page": "app/page.js"
+}

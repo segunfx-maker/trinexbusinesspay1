@@ -1,0 +1,22 @@
+{
+  "/(auth)/sign-in/page": "/sign-in",
+  "/(auth)/sign-up/page": "/sign-up",
+  "/(dashboard)/accounts/page": "/accounts",
+  "/(dashboard)/analytics/page": "/analytics",
+  "/(dashboard)/budgets/page": "/budgets",
+  "/(dashboard)/cards/page": "/cards",
+  "/(dashboard)/crypto/page": "/crypto",
+  "/(dashboard)/dashboard/page": "/dashboard",
+  "/(dashboard)/investments/page": "/investments",
+  "/(dashboard)/notifications/page": "/notifications",
+  "/(dashboard)/settings/page": "/settings",
+  "/(dashboard)/support/page": "/support",
+  "/(dashboard)/transactions/page": "/transactions",
+  "/(dashboard)/transfers/page": "/transfers",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/health/route": "/api/health",
+  "/api/market/ticker/route": "/api/market/ticker",
+  "/icon.svg/route": "/icon.svg",
+  "/page": "/"
+}
