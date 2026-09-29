@@ -1,9 +1,9 @@
-import { TransfersPageClient } from "@/components/transfers/transfers-page-client"
+import { TransferOperations } from "@/components/financial-operations"
 
 export default function Page() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <TransfersPageClient />
+      <TransferOperations />
     </div>
   )
 }

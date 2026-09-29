@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
@@ -134,6 +135,18 @@ function SecurityTab() {
 
   return (
     <div className="space-y-6">
+      <Card className="overflow-hidden border-primary/25 bg-[linear-gradient(135deg,var(--card),var(--accent))]">
+        <CardHeader>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <CardTitle>Identity verification</CardTitle>
+              <CardDescription className="mt-1">Submit identification securely and follow your manual KYC review.</CardDescription>
+            </div>
+            <ShieldIcon className="size-6 text-primary" />
+          </div>
+        </CardHeader>
+        <CardContent><Button render={<Link href="/settings/kyc" />}>Open KYC center</Button></CardContent>
+      </Card>
       {/* Change Password */}
       <Card>
         <CardHeader>

@@ -22,6 +22,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, LogOutIcon } from "lucide-react"
+import { logout } from "@netlify/identity"
 
 export function NavUser({
   user,
@@ -95,7 +96,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem render={<Link href="/sign-in" />}>
+            <DropdownMenuItem onClick={async () => { await logout(); window.location.href = "/sign-in" }}>
               <LogOutIcon
               />
               Log out

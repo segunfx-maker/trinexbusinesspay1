@@ -1,0 +1,6 @@
+"use client"
+import { FormEvent, useState } from "react"
+import { acceptInvite, getUser, updateUser } from "@netlify/identity"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+export default function ResetPassword(){const [message,setMessage]=useState("");async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();const password=String(new FormData(e.currentTarget).get("password"));try{const invite=new URLSearchParams(window.location.search).get("invite");if(invite)await acceptInvite(invite,password);else{if(!await getUser())throw new Error("Recovery session is missing or expired. Request a new recovery email.");await updateUser({password})}setMessage("Password updated. Redirecting…");window.location.href="/dashboard"}catch(error){setMessage(error instanceof Error?error.message:"Unable to update password.")}}return <main className="m-auto w-full max-w-md p-8"><h1 className="mb-6 text-2xl font-semibold">Set a new password</h1><form onSubmit={submit} className="grid gap-4"><Input name="password" type="password" minLength={8} required autoComplete="new-password"/><Button>Update password</Button>{message&&<p className="text-sm">{message}</p>}</form></main>}

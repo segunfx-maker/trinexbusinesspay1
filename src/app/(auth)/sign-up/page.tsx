@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
 import {
@@ -24,6 +23,7 @@ import {
   InputGroupButton,
 } from "@/components/ui/input-group"
 import dynamic from "next/dynamic"
+import { signup } from "@netlify/identity"
 
 const GlobeDemo = dynamic(() => import("@/components/globe-demo"), {
   ssr: false,
@@ -54,16 +54,20 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [message, setMessage] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!agreed) return
     setIsLoading(true)
-    setTimeout(() => {
+    const form = new FormData(e.currentTarget)
+    try {
+      const user = await signup(String(form.get("email")), String(form.get("password")), { full_name: String(form.get("name")) })
       setIsLoading(false)
       setIsSuccess(true)
-      setTimeout(() => setIsSuccess(false), 2000)
-    }, 1500)
+      if (user.confirmedAt) window.location.href = "/dashboard"
+      else setMessage("Check your email to confirm your account.")
+    } catch (cause) { setIsLoading(false); setMessage(cause instanceof Error ? cause.message : "Unable to create account.") }
   }
 
   return (
@@ -127,47 +131,8 @@ export default function SignUpPage() {
             </p>
           </motion.div>
 
-          {/* Social buttons */}
-          <motion.div
-            className="mt-8 grid grid-cols-2 gap-3"
-            variants={itemVariants}
-          >
-            <Button variant="outline" size="lg" className="gap-2">
-              <Image
-                src="/logos/google-com.png"
-                alt="Google"
-                width={16}
-                height={16}
-                className="size-4"
-              />
-              <span className="text-sm">Google</span>
-            </Button>
-            <Button variant="outline" size="lg" className="gap-2">
-              <Image
-                src="/logos/apple-com.png"
-                alt="Apple"
-                width={16}
-                height={16}
-                className="size-4"
-              />
-              <span className="text-sm">Apple</span>
-            </Button>
-          </motion.div>
-
-          {/* Divider */}
-          <motion.div
-            className="relative my-6 flex items-center"
-            variants={itemVariants}
-          >
-            <div className="flex-1 border-t border-border" />
-            <span className="mx-3 text-xs text-muted-foreground">
-              or continue with
-            </span>
-            <div className="flex-1 border-t border-border" />
-          </motion.div>
-
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="name"
@@ -180,6 +145,7 @@ export default function SignUpPage() {
                   <UserIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="name"
                   id="name"
                   type="text"
                   placeholder="John Doe"
@@ -200,6 +166,7 @@ export default function SignUpPage() {
                   <MailIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="email"
                   id="email"
                   type="email"
                   placeholder="name@example.com"
@@ -220,6 +187,7 @@ export default function SignUpPage() {
                   <LockIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="password"
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a password"
@@ -293,6 +261,7 @@ export default function SignUpPage() {
               </Button>
             </motion.div>
           </form>
+          {message && <p role="status" className="mt-3 text-center text-sm text-muted-foreground">{message}</p>}
 
           {/* Footer */}
           <motion.p
