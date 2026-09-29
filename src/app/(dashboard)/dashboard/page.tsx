@@ -1,5 +1,5 @@
-import { DashboardCustomizer } from "@/components/dashboard/dashboard-customizer"
+import { RealOverview } from "@/components/dashboard/real-overview"
 
 export default function Page() {
-  return <DashboardCustomizer />
+  return <RealOverview />
 }

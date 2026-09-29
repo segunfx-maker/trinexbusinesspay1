@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { handleAuthCallback, login, oauthLogin, requestPasswordRecovery } from "@netlify/identity"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
@@ -48,18 +50,25 @@ const itemVariants = {
 }
 
 export default function SignInPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => { handleAuthCallback().then((result) => { if (result?.user) router.replace("/dashboard") }).catch((cause) => setError(cause instanceof Error ? cause.message : "Authentication failed.")) }, [router])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setError("")
     setIsLoading(true)
-    setTimeout(() => {
+    const form = new FormData(e.currentTarget)
+    try {
+      await login(String(form.get("email")), String(form.get("password")))
       setIsLoading(false)
       setIsSuccess(true)
-      setTimeout(() => setIsSuccess(false), 2000)
-    }, 1500)
+      router.replace("/dashboard")
+    } catch (cause) { setIsLoading(false); setError(cause instanceof Error ? cause.message : "Unable to sign in.") }
   }
 
   return (
@@ -128,7 +137,7 @@ export default function SignInPage() {
             className="mt-8 grid grid-cols-2 gap-3"
             variants={itemVariants}
           >
-            <Button variant="outline" size="lg" className="gap-2">
+            <Button type="button" variant="outline" size="lg" className="gap-2" onClick={() => oauthLogin("google")}>
               <Image
                 src="/logos/google-com.png"
                 alt="Google"
@@ -138,7 +147,7 @@ export default function SignInPage() {
               />
               <span className="text-sm">Google</span>
             </Button>
-            <Button variant="outline" size="lg" className="gap-2">
+            <Button type="button" variant="outline" size="lg" className="gap-2" disabled title="Apple sign-in is not configured">
               <Image
                 src="/logos/apple-com.png"
                 alt="Apple"
@@ -176,6 +185,7 @@ export default function SignInPage() {
                   <MailIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="email"
                   id="email"
                   type="email"
                   placeholder="name@example.com"
@@ -189,18 +199,20 @@ export default function SignInPage() {
                 <label htmlFor="password" className="text-sm font-medium">
                   Password
                 </label>
-                <Link
-                  href="#"
+                <button
+                  type="button"
+                  onClick={async () => { const email = document.querySelector<HTMLInputElement>('#email')?.value; if (!email) return setError("Enter your email first."); try { await requestPasswordRecovery(email); setError("Password recovery email sent.") } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to send recovery email.") } }}
                   className="text-xs text-muted-foreground transition-colors hover:text-foreground"
                 >
                   Forgot password?
-                </Link>
+                </button>
               </div>
               <InputGroup>
                 <InputGroupAddon align="inline-start">
                   <LockIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="password"
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
@@ -246,6 +258,7 @@ export default function SignInPage() {
               </Button>
             </motion.div>
           </form>
+          {error && <p role="alert" className="mt-3 text-center text-sm text-muted-foreground">{error}</p>}
 
           {/* Footer */}
           <motion.p

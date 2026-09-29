@@ -1,5 +1,5 @@
-import { CryptoPageClient } from "@/components/crypto/crypto-page-client"
+import { RealOverview } from "@/components/dashboard/real-overview"
 
 export default function Page() {
-  return <CryptoPageClient />
+  return <RealOverview section="crypto" />
 }
