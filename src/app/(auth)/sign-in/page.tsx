@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { handleAuthCallback, login, oauthLogin, requestPasswordRecovery } from "@netlify/identity"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { login, oauthLogin, requestPasswordRecovery } from "@netlify/identity"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
@@ -50,13 +49,11 @@ const itemVariants = {
 }
 
 export default function SignInPage() {
-  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => { handleAuthCallback().then((result) => { if (result?.user) router.replace("/dashboard") }).catch((cause) => setError(cause instanceof Error ? cause.message : "Authentication failed.")) }, [router])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -67,7 +64,7 @@ export default function SignInPage() {
       await login(String(form.get("email")), String(form.get("password")))
       setIsLoading(false)
       setIsSuccess(true)
-      router.replace("/dashboard")
+      window.location.href = "/dashboard"
     } catch (cause) { setIsLoading(false); setError(cause instanceof Error ? cause.message : "Unable to sign in.") }
   }
 

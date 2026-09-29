@@ -8,12 +8,16 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { getUser } from "@netlify/identity"
+import { redirect } from "next/navigation"
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const user = await getUser()
+  if (!user) redirect("/sign-in")
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/input-group"
 import dynamic from "next/dynamic"
 import { oauthLogin, signup } from "@netlify/identity"
-import { useRouter } from "next/navigation"
 
 const GlobeDemo = dynamic(() => import("@/components/globe-demo"), {
   ssr: false,
@@ -52,7 +51,6 @@ const itemVariants = {
 }
 
 export default function SignUpPage() {
-  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -68,7 +66,7 @@ export default function SignUpPage() {
       const user = await signup(String(form.get("email")), String(form.get("password")), { full_name: String(form.get("name")) })
       setIsLoading(false)
       setIsSuccess(true)
-      if (user.confirmedAt) router.replace("/dashboard")
+      if (user.confirmedAt) window.location.href = "/dashboard"
       else setMessage("Check your email to confirm your account.")
     } catch (cause) { setIsLoading(false); setMessage(cause instanceof Error ? cause.message : "Unable to create account.") }
   }
