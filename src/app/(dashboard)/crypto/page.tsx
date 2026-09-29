@@ -1,5 +1,2 @@
-import { RealOverview } from "@/components/dashboard/real-overview"
-
-export default function Page() {
-  return <RealOverview section="crypto" />
-}
+import { CryptoOperations } from "@/components/financial-operations"
+export default function Page(){return <div className="flex flex-1 flex-col gap-4 p-4 pt-0"><CryptoOperations/></div>}

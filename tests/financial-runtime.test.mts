@@ -1,0 +1,9 @@
+import test from "node:test"
+import assert from "node:assert/strict"
+import { accountNumber, investmentAmount, money } from "../netlify/functions/_shared/finance.mts"
+
+test("recipient lookup accepts only 12-digit numeric account numbers",()=>{assert.equal(accountNumber("925666850265"),"925666850265");assert.throws(()=>accountNumber("TRX-USD-1"));assert.throws(()=>accountNumber("123"))})
+test("financial amounts reject zero, negative and excessive precision",()=>{assert.equal(money("100000.00"),"100000.00");for(const x of [0,-1,"1.000000001","NaN"])assert.throws(()=>money(x))})
+test("investment plan ranges are enforced",()=>{assert.equal(investmentAmount("GOLD",5000),"5000");assert.equal(investmentAmount("GOLD",20000),"20000");assert.throws(()=>investmentAmount("GOLD",20001));assert.equal(investmentAmount("DIAMOND",21000),"21000");assert.throws(()=>investmentAmount("DIAMOND",20000));assert.equal(investmentAmount("PLATINUM",110000),"110000");assert.throws(()=>investmentAmount("PLATINUM",109999))})
+test("runtime source contains transactional and idempotent protections",async()=>{const fs=await import("node:fs/promises");const transfer=await fs.readFile(new URL("../netlify/functions/internal-transfer.mts",import.meta.url),"utf8");const credit=await fs.readFile(new URL("../netlify/functions/admin-credit.mts",import.meta.url),"utf8");for(const source of [transfer,credit]){assert.match(source,/BEGIN/);assert.match(source,/FOR UPDATE/);assert.match(source,/idempotency/);assert.match(source,/ledger_entries/);assert.match(source,/audit_events/)}})
+test("crypto never handles seed phrases or private keys",async()=>{const fs=await import("node:fs/promises");const source=await fs.readFile(new URL("../netlify/functions/crypto-operations.mts",import.meta.url),"utf8");assert.doesNotMatch(source,/seed phrase|private key/i);assert.match(source,/Coinbase spot/);assert.match(source,/PENDING/)})
