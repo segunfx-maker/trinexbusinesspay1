@@ -1,5 +1,5 @@
 "use client"
 import { handleAuthCallback } from "@netlify/identity"
 import { useEffect, useState } from "react"
-const TOKEN=/^#(confirmation_token|recovery_token|invite_token|email_change_token|access_token)=/
+const TOKEN=/^#(confirmation_token|recovery_token|invite_token|email_change_token)=/
 export function AuthCallbackHandler({children}:{children:React.ReactNode}){const [processing,setProcessing]=useState(()=>typeof window!=="undefined"&&TOKEN.test(window.location.hash));const [error,setError]=useState<string|null>(null);useEffect(()=>{if(!TOKEN.test(window.location.hash))return;handleAuthCallback().then(result=>{if(!result)return setProcessing(false);if(result.type==="recovery")window.location.href="/reset-password";else if(result.type==="invite")window.location.href=`/reset-password?invite=${encodeURIComponent(result.token??"")}`;else window.location.href="/dashboard"}).catch(e=>{setError(e instanceof Error?e.message:"Authentication callback failed.");setProcessing(false)})},[]);if(error)return <main className="m-auto p-8">Authentication error: {error}</main>;if(processing)return <main className="m-auto p-8">Confirming your account…</main>;return <>{children}</>}

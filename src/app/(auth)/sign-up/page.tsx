@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
 import {
@@ -24,7 +23,7 @@ import {
   InputGroupButton,
 } from "@/components/ui/input-group"
 import dynamic from "next/dynamic"
-import { oauthLogin, signup } from "@netlify/identity"
+import { signup } from "@netlify/identity"
 
 const GlobeDemo = dynamic(() => import("@/components/globe-demo"), {
   ssr: false,
@@ -132,47 +131,8 @@ export default function SignUpPage() {
             </p>
           </motion.div>
 
-          {/* Social buttons */}
-          <motion.div
-            className="mt-8 grid grid-cols-2 gap-3"
-            variants={itemVariants}
-          >
-            <Button type="button" variant="outline" size="lg" className="gap-2" onClick={() => oauthLogin("google")}>
-              <Image
-                src="/logos/google-com.png"
-                alt="Google"
-                width={16}
-                height={16}
-                className="size-4"
-              />
-              <span className="text-sm">Google</span>
-            </Button>
-            <Button type="button" variant="outline" size="lg" className="gap-2" disabled title="Apple sign-up is not configured">
-              <Image
-                src="/logos/apple-com.png"
-                alt="Apple"
-                width={16}
-                height={16}
-                className="size-4"
-              />
-              <span className="text-sm">Apple</span>
-            </Button>
-          </motion.div>
-
-          {/* Divider */}
-          <motion.div
-            className="relative my-6 flex items-center"
-            variants={itemVariants}
-          >
-            <div className="flex-1 border-t border-border" />
-            <span className="mx-3 text-xs text-muted-foreground">
-              or continue with
-            </span>
-            <div className="flex-1 border-t border-border" />
-          </motion.div>
-
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <motion.div variants={itemVariants}>
               <label
                 htmlFor="name"
