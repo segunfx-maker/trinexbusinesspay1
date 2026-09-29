@@ -1,3 +1,5 @@
 [build]
-  command = "pnpm install --no-frozen-lockfile && pnpm build"
-  publish = ".next"
+  command = "pnpm build"
+
+[functions]
+  directory = "netlify/functions"

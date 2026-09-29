@@ -1,9 +1,5 @@
-import { AccountsPageClient } from "@/components/accounts/accounts-page-client"
+import { RealOverview } from "@/components/dashboard/real-overview"
 
 export default function Page() {
-  return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <AccountsPageClient />
-    </div>
-  )
+  return <RealOverview section="accounts" />
 }

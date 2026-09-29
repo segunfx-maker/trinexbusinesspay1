@@ -24,6 +24,8 @@ import {
   InputGroupButton,
 } from "@/components/ui/input-group"
 import dynamic from "next/dynamic"
+import { oauthLogin, signup } from "@netlify/identity"
+import { useRouter } from "next/navigation"
 
 const GlobeDemo = dynamic(() => import("@/components/globe-demo"), {
   ssr: false,
@@ -50,20 +52,25 @@ const itemVariants = {
 }
 
 export default function SignUpPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [agreed, setAgreed] = useState(false)
+  const [message, setMessage] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!agreed) return
     setIsLoading(true)
-    setTimeout(() => {
+    const form = new FormData(e.currentTarget)
+    try {
+      const user = await signup(String(form.get("email")), String(form.get("password")), { full_name: String(form.get("name")) })
       setIsLoading(false)
       setIsSuccess(true)
-      setTimeout(() => setIsSuccess(false), 2000)
-    }, 1500)
+      if (user.confirmedAt) router.replace("/dashboard")
+      else setMessage("Check your email to confirm your account.")
+    } catch (cause) { setIsLoading(false); setMessage(cause instanceof Error ? cause.message : "Unable to create account.") }
   }
 
   return (
@@ -132,7 +139,7 @@ export default function SignUpPage() {
             className="mt-8 grid grid-cols-2 gap-3"
             variants={itemVariants}
           >
-            <Button variant="outline" size="lg" className="gap-2">
+            <Button type="button" variant="outline" size="lg" className="gap-2" onClick={() => oauthLogin("google")}>
               <Image
                 src="/logos/google-com.png"
                 alt="Google"
@@ -142,7 +149,7 @@ export default function SignUpPage() {
               />
               <span className="text-sm">Google</span>
             </Button>
-            <Button variant="outline" size="lg" className="gap-2">
+            <Button type="button" variant="outline" size="lg" className="gap-2" disabled title="Apple sign-up is not configured">
               <Image
                 src="/logos/apple-com.png"
                 alt="Apple"
@@ -180,6 +187,7 @@ export default function SignUpPage() {
                   <UserIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="name"
                   id="name"
                   type="text"
                   placeholder="John Doe"
@@ -200,6 +208,7 @@ export default function SignUpPage() {
                   <MailIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="email"
                   id="email"
                   type="email"
                   placeholder="name@example.com"
@@ -220,6 +229,7 @@ export default function SignUpPage() {
                   <LockIcon className="size-4 text-muted-foreground" />
                 </InputGroupAddon>
                 <InputGroupInput
+                  name="password"
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a password"
@@ -293,6 +303,7 @@ export default function SignUpPage() {
               </Button>
             </motion.div>
           </form>
+          {message && <p role="status" className="mt-3 text-center text-sm text-muted-foreground">{message}</p>}
 
           {/* Footer */}
           <motion.p
